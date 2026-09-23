@@ -1,24 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { LogoStrip } from "@/components/LogoStrip";
+import { FeatureRow } from "@/components/FeatureRow";
+import { PopularGrid } from "@/components/PopularGrid";
+import { Footer } from "@/components/Footer";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Barberly — Find a barber, book in a few taps" },
+      {
+        name: "description",
+        content: "Discover verified barbers and hair stylists near you and book an appointment online.",
+      },
+      { property: "og:title", content: "Barberly — Find a barber, book in a few taps" },
+      {
+        property: "og:description",
+        content: "Discover verified barbers and hair stylists near you and book an appointment online.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen">
+      <Navbar />
+      <main>
+        <Hero />
+        <LogoStrip />
+        <FeatureRow />
+        <PopularGrid />
+      </main>
+      <Footer />
     </div>
   );
 }
