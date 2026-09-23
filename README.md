@@ -76,11 +76,9 @@ The site must include:
 
     - Footer with copyright "© 2026 Barberly".
 
-2. Authentication using Lovable's built-in Supabase-style auth (Lovable Cloud
+2. Authentication using Supabase Auth on the user-owned Supabase project:
 
-    is fine for v1; we'll swap to a user-owned Supabase project later):
-
-    - A combined Sign Up / Sign In page at /login with email + password.
+    - Sign In / Sign Up pages at /sign-in and /sign-up with email + password.
 
     - On the Sign Up form, include a role selector as a TAB / segmented toggle
 
@@ -96,7 +94,7 @@ The site must include:
 
     - Email confirmation disabled for v1.
 
-3. After signing in, land the user on /barbers, a simple authenticated shell:
+3. After signing in, land the user on /app, a simple authenticated shell:
 
     - A header with the Barberly wordmark on the left, and on the right: the
 
@@ -134,16 +132,6 @@ come in later milestones. Stick to landing page + role-tab auth + the
 
 role-aware /barbers placeholder shell.
 
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/d5d0e3ac-cf54-4584-ae87-88180b09a8e0).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
 ## Development
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
@@ -162,4 +150,5 @@ This app is a plain **Vite + React single-page app** — no SSR, no server runti
 - Routing: React Router (client-side) — `/`, `/sign-in`, `/sign-up`, `/app` (auth-guarded). Legacy `/login` → `/sign-in`, `/barbers` → `/app`.
 - Build: `vite build` → static files in `dist/`.
 - Hosting: Vercel. `vercel.json` rewrites every path to `/index.html` so deep links like `/app` resolve client-side.
-- Env: `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are inlined at build time (from `.env` or Vercel project env vars).
+- Backend: user-owned Supabase project `kjkkofzbgbxmwwxrdwno` (`https://kjkkofzbgbxmwwxrdwno.supabase.co`).
+- Env: `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (the `sb_publishable_*` key — the successor to the anon key) are inlined at build time from `.env` or Vercel project env vars.

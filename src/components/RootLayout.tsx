@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, useRouteError } from "react-router";
 import { useEffect } from "react";
 
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -31,9 +30,8 @@ export function NotFoundComponent() {
 
 export function ErrorComponent() {
   const error = useRouteError();
-  console.error(error);
   useEffect(() => {
-    reportLovableError(error, { boundary: "react_router_root_error_element" });
+    console.error(error);
   }, [error]);
 
   return (
