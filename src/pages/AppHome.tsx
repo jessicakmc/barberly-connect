@@ -1,21 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
+import { useAuthedUser } from "@/components/RequireAuth";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
-export const Route = createFileRoute("/_authenticated/barbers")({
-  head: () => ({
-    meta: [
-      { title: "Barbers — Barberly" },
-      { name: "description", content: "Your Barberly home." },
-      { property: "og:title", content: "Barbers — Barberly" },
-      { property: "og:description", content: "Your Barberly home." },
-    ],
-  }),
-  component: BarbersPage,
-});
-
-function BarbersPage() {
-  const { user } = Route.useRouteContext();
+export function AppHome() {
+  useDocumentMeta("Barbers — Barberly", "Your Barberly home.");
+  const user = useAuthedUser();
   const isShop = user.user_metadata?.['role'] === "shop";
 
   return (

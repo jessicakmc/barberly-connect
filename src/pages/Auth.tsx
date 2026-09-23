@@ -1,25 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/useAuth";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
-export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Sign in — Barberly" },
-      { name: "description", content: "Sign in or create a Barberly account as a customer or barber." },
-      { property: "og:title", content: "Sign in — Barberly" },
-      { property: "og:description", content: "Sign in or create a Barberly account as a customer or barber." },
-    ],
-  }),
-  component: LoginPage,
-});
+export type Mode = "signin" | "signup";
 
-type Mode = "signin" | "signup";
-
-function LoginPage() {
+export function AuthPage({ mode }: { mode: Mode }) {
+  useDocumentMeta(
+    mode === "signup" ? "Sign up — Barberly" : "Sign in — Barberly",
+    "Sign in or create a Barberly account as a customer or barber.",
+  );
   const navigate = useNavigate();
-  const [mode, setMode] = useState<Mode>("signin");
   const [role, setRole] = useState<AppRole>("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +20,7 @@ function LoginPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/barbers", replace: true });
+      if (data.session) navigate("/app", { replace: true });
     });
   }, [navigate]);
 
@@ -48,7 +40,7 @@ function LoginPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      navigate({ to: "/barbers", replace: true });
+      navigate("/app", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -148,7 +140,7 @@ function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setMode(mode === "signup" ? "signin" : "signup");
+                navigate(mode === "signup" ? "/sign-in" : "/sign-up");
                 setError(null);
               }}
               className="font-medium text-foreground underline-offset-4 hover:underline"

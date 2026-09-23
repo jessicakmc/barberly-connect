@@ -154,3 +154,12 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Architecture (Vercel static SPA)
+
+This app is a plain **Vite + React single-page app** — no SSR, no server runtime.
+
+- Routing: React Router (client-side) — `/`, `/sign-in`, `/sign-up`, `/app` (auth-guarded). Legacy `/login` → `/sign-in`, `/barbers` → `/app`.
+- Build: `vite build` → static files in `dist/`.
+- Hosting: Vercel. `vercel.json` rewrites every path to `/index.html` so deep links like `/app` resolve client-side.
+- Env: `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are inlined at build time (from `.env` or Vercel project env vars).

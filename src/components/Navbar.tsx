@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router";
 import { Search } from "lucide-react";
 
 export function Navbar() {
@@ -18,7 +18,7 @@ export function Navbar() {
           />
         </label>
 
-        <Link to="/login" className="btn-pill">
+        <Link to="/sign-in" className="btn-pill">
           Login
         </Link>
       </div>
