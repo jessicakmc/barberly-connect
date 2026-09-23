@@ -23,7 +23,7 @@ export function useAuth() {
   }, []);
 
   const user: User | null = session?.user ?? null;
-  const role = (user?.user_metadata?.role as AppRole | undefined) ?? "customer";
+  const role = (user?.user_metadata?.['role'] as AppRole | undefined) ?? "customer";
 
   return { session, user, role, loading };
 }

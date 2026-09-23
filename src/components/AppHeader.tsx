@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 export function AppHeader({ user }: { user: User }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const isShop = user.user_metadata?.role === "shop";
+  const isShop = user.user_metadata?.['role'] === "shop";
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
