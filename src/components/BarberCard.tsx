@@ -31,7 +31,7 @@ export function BarberCard({ barber }: { barber: Barber }) {
           height={768}
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <span className="absolute top-3 left-3 rounded-full bg-card/90 px-3 py-1 text-xs font-medium shadow-card backdrop-blur">
+        <span className="absolute top-3 left-3 rounded-full bg-card/90 px-3 py-1 text-xs font-medium text-rose shadow-card backdrop-blur">
           Popular
         </span>
       </div>

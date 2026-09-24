@@ -17,7 +17,7 @@ export function FeatureRow() {
             key={label}
             className="rounded-3xl border border-border bg-card p-6 text-center shadow-card"
           >
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-sand">
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-sage text-leaf">
               <Icon className="size-5" aria-hidden />
             </div>
             <h3 className="mt-4 font-sans text-base font-semibold tracking-normal">{label}</h3>

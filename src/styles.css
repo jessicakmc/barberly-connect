@@ -35,10 +35,14 @@
   --color-cream: var(--cream);
   --color-sand: var(--sand);
   --color-gold: var(--gold);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-leaf: var(--leaf);
   --font-display: "Cormorant Garamond", "Georgia", serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.04), 0 8px 24px -8px oklch(0.2 0.02 60 / 0.08);
-  --shadow-lift: 0 2px 4px oklch(0.2 0.02 60 / 0.05), 0 20px 40px -12px oklch(0.2 0.02 60 / 0.18);
+  --shadow-card: 0 1px 2px rgb(92 52 44 / 0.05), 0 10px 28px -10px rgb(156 85 82 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(92 52 44 / 0.06), 0 26px 48px -16px rgb(156 85 82 / 0.32);
+  --shadow-glow: 0 30px 60px -24px rgb(156 85 82 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.6) inset;
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 
   @keyframes fade-up {
@@ -54,29 +58,35 @@
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.985 0.006 80);
-  --foreground: oklch(0.2 0.012 60);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.012 60);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.012 60);
-  --primary: oklch(0.2 0.012 60);
-  --primary-foreground: oklch(0.985 0.006 80);
-  --secondary: oklch(0.94 0.018 80);
-  --secondary-foreground: oklch(0.25 0.012 60);
-  --muted: oklch(0.955 0.012 80);
-  --muted-foreground: oklch(0.5 0.015 60);
-  --accent: oklch(0.9 0.03 75);
-  --accent-foreground: oklch(0.25 0.012 60);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0.006 80);
-  --border: oklch(0.91 0.012 80);
-  --input: oklch(0.91 0.012 80);
-  --ring: oklch(0.35 0.015 60);
-  --cream: oklch(0.965 0.014 82);
-  --sand: oklch(0.9 0.03 78);
-  --gold: oklch(0.75 0.13 75);
+  /* "Petal & Bronze" — palette sampled from the brand reference photo:
+     porcelain skin, blush peony petals, glossy rose lips, espresso hair,
+     sun-warmed bronze highlights and deep sage leaves. */
+  --radius: 1.25rem;
+  --background: #fbf6f3; /* porcelain blush */
+  --foreground: #2b1d17; /* espresso (hair) */
+  --card: #fffdfb;
+  --card-foreground: #2b1d17;
+  --popover: #fffdfb;
+  --popover-foreground: #2b1d17;
+  --primary: #9c5552; /* rosewood (lips) */
+  --primary-foreground: #fff8f5;
+  --secondary: #f4e3dd; /* peony petal */
+  --secondary-foreground: #4a3028;
+  --muted: #f6ece7;
+  --muted-foreground: #7a5f55; /* warm taupe */
+  --accent: #efd6ce;
+  --accent-foreground: #3e2a22;
+  --destructive: #b3261e;
+  --destructive-foreground: #fff8f5;
+  --border: #ebdad3;
+  --input: #ebdad3;
+  --ring: #b8716c;
+  --cream: #f7eae4; /* petal wash */
+  --sand: #efd3c8; /* blush */
+  --gold: #c08a5a; /* sun-warmed bronze */
+  --rose: #94524f; /* rose ink (eyebrows / accents) */
+  --sage: #e4eadb; /* sage mist */
+  --leaf: #3f5e44; /* deep leaf green */
 }
 
 @layer base {
@@ -90,9 +100,19 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(1100px 620px at -8% -12%, rgb(226 176 140 / 0.28), transparent 62%),
+      radial-gradient(900px 640px at 108% 4%, rgb(233 188 186 / 0.34), transparent 60%),
+      radial-gradient(900px 700px at 50% 115%, rgb(214 226 204 / 0.35), transparent 65%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: rgb(201 139 132 / 0.35);
+    color: var(--color-foreground);
   }
 
   h1,
@@ -110,15 +130,23 @@
   gap: 0.5rem;
   border-radius: 9999px;
   background-color: var(--color-primary);
+  background-image: linear-gradient(135deg, #b0625e 0%, #9c5552 45%, #8a4a48 100%);
   color: var(--color-primary-foreground);
   padding: 0.625rem 1.375rem;
   font-size: 0.875rem;
   font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    0 8px 18px -8px rgb(156 85 82 / 0.6);
   transition:
-    background-color 0.2s,
+    filter 0.2s,
+    box-shadow 0.2s,
     transform 0.2s;
   &:hover {
-    background-color: oklch(0.3 0.012 60);
+    filter: brightness(1.06) saturate(1.05);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.32),
+      0 12px 24px -10px rgb(156 85 82 / 0.7);
   }
   &:active {
     transform: scale(0.98);
@@ -149,6 +177,7 @@
 
 @utility chip-active {
   background-color: var(--color-primary);
+  background-image: linear-gradient(135deg, #b0625e, #8a4a48);
   color: var(--color-primary-foreground);
   border-color: var(--color-primary);
   &:hover {
@@ -176,5 +205,18 @@
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-muted-foreground);
+  color: var(--color-rose);
+}
+
+/* glossy rose-to-bronze text, like lip gloss catching the sun */
+@utility text-gloss {
+  background-image: linear-gradient(100deg, #8a4a48 0%, #c98b84 48%, #b27a4e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* soft rose halo for editorial photos */
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
 }

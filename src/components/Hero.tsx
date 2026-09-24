@@ -17,7 +17,7 @@ export function Hero() {
             alt="Woman with a glossy bob haircut"
             width={768}
             height={1024}
-            className="aspect-[3/4] w-full max-w-xs rounded-3xl object-cover shadow-card"
+            className="aspect-[3/4] w-full max-w-xs rounded-3xl object-cover shadow-glow"
           />
         </div>
 
@@ -26,7 +26,7 @@ export function Hero() {
           <h1 className="mt-4 text-5xl leading-[1.02] font-medium sm:text-6xl lg:text-7xl">
             Style with
             <br />
-            <em className="italic">Confident</em> Hair
+            <em className="text-gloss pr-1 italic">Confident</em> Hair
           </h1>
           <p className="mt-5 text-base text-muted-foreground">
             Discover trusted barbers and stylists near you, and book a slot in a few taps.
@@ -39,7 +39,7 @@ export function Hero() {
             alt="Man with a textured fade and groomed beard"
             width={768}
             height={1024}
-            className="ml-auto aspect-[3/4] w-full max-w-xs rounded-3xl object-cover shadow-card"
+            className="ml-auto aspect-[3/4] w-full max-w-xs rounded-3xl object-cover shadow-glow"
           />
         </div>
       </div>
@@ -50,14 +50,14 @@ export function Hero() {
           alt="Woman with a glossy bob haircut"
           width={768}
           height={1024}
-          className="aspect-[3/4] w-full rounded-2xl object-cover shadow-card"
+          className="aspect-[3/4] w-full rounded-2xl object-cover shadow-glow"
         />
         <img
           src={heroRight}
           alt="Man with a textured fade and groomed beard"
           width={768}
           height={1024}
-          className="aspect-[3/4] w-full rounded-2xl object-cover shadow-card"
+          className="aspect-[3/4] w-full rounded-2xl object-cover shadow-glow"
         />
       </div>
 
