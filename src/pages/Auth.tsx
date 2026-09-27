@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/useAuth";
+import { fetchProfile, homePathForRole } from "@/lib/useProfile";
 import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
 export type Mode = "signin" | "signup";
@@ -16,31 +17,51 @@ export function AuthPage({ mode }: { mode: Mode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // Route by profiles.role (shop -> shop dashboard, customer -> customer home).
+  async function goHome(userId: string) {
+    let role: string | null = null;
+    try {
+      role = (await fetchProfile(userId))?.role ?? null;
+    } catch {
+      role = null;
+    }
+    navigate(homePathForRole(role), { replace: true });
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/app", { replace: true });
+      if (data.session) void goHome(data.session.user.id);
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setNotice(null);
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { role }, emailRedirectTo: window.location.origin },
+          // The confirmation link lands on /sign-in, which routes by profiles.role.
+          options: { data: { role }, emailRedirectTo: `${window.location.origin}/sign-in` },
         });
         if (error) throw error;
+        if (!data.session || !data.user) {
+          setNotice("Check your email to confirm your account, then sign in.");
+          return;
+        }
+        await goHome(data.user.id);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        await goHome(data.user.id);
       }
-      navigate("/app", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -123,6 +144,12 @@ export function AuthPage({ mode }: { mode: Mode }) {
                 className="mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
+
+            {notice && (
+              <p role="status" className="text-sm text-muted-foreground">
+                {notice}
+              </p>
+            )}
 
             {error && (
               <p role="alert" className="text-sm text-destructive">

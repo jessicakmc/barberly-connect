@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
+/** Roles a user can pick at sign-up. The stored role lives in `profiles.role` (see useProfile). */
 export type AppRole = "customer" | "shop";
 
 export function useAuth() {
@@ -23,7 +24,6 @@ export function useAuth() {
   }, []);
 
   const user: User | null = session?.user ?? null;
-  const role = (user?.user_metadata?.['role'] as AppRole | undefined) ?? "customer";
 
-  return { session, user, role, loading };
+  return { session, user, loading };
 }

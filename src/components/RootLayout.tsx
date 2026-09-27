@@ -3,6 +3,7 @@ import { Outlet, Link, useRouteError } from "react-router";
 import { useEffect } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ export function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }
