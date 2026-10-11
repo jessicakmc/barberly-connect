@@ -12,6 +12,7 @@ export function AppHeader({ user }: { user: User }) {
   const { data: profile, isPending } = useProfile(user.id);
   const role = roleOf(profile);
   const isShop = role === "shop";
+  const isAdmin = role === "admin";
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -44,6 +45,9 @@ export function AppHeader({ user }: { user: User }) {
               <NavLink to="/shop/bookings" className={navClass}>
                 Schedule &amp; services
               </NavLink>
+              <NavLink to="/shop/earnings" className={navClass}>
+                Earnings
+              </NavLink>
             </nav>
           )}
           {!isShop && !isPending && (
@@ -54,6 +58,11 @@ export function AppHeader({ user }: { user: User }) {
               <NavLink to="/bookings" className={navClass}>
                 My bookings
               </NavLink>
+              {isAdmin && (
+                <NavLink to="/admin/payouts" className={navClass}>
+                  Payouts
+                </NavLink>
+              )}
             </nav>
           )}
         </div>
@@ -67,6 +76,11 @@ export function AppHeader({ user }: { user: User }) {
           {isShop && (
             <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
               shop
+            </span>
+          )}
+          {isAdmin && (
+            <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
+              admin
             </span>
           )}
           {!isPending && role === "customer" && (
@@ -92,6 +106,9 @@ export function AppHeader({ user }: { user: User }) {
           <NavLink to="/shop/bookings" className={navClass}>
             Schedule &amp; services
           </NavLink>
+          <NavLink to="/shop/earnings" className={navClass}>
+            Earnings
+          </NavLink>
         </nav>
       )}
       {!isShop && !isPending && (
@@ -105,6 +122,11 @@ export function AppHeader({ user }: { user: User }) {
           <NavLink to="/bookings" className={navClass}>
             My bookings
           </NavLink>
+          {isAdmin && (
+            <NavLink to="/admin/payouts" className={navClass}>
+              Payouts
+            </NavLink>
+          )}
         </nav>
       )}
     </header>

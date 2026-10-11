@@ -26,7 +26,8 @@ export function AuthPage({ mode }: { mode: Mode }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // Route by profiles.role (shop -> shop dashboard, customer -> customer home).
+  // Route by profiles.role (shop -> shop dashboard, admin -> payout builder, customer -> `next`
+  // or the customer home). Shop and admin always land on their own home.
   async function goHome(userId: string) {
     let role: string | null = null;
     try {
@@ -34,7 +35,9 @@ export function AuthPage({ mode }: { mode: Mode }) {
     } catch {
       role = null;
     }
-    navigate(next && role !== "shop" ? next : homePathForRole(role), { replace: true });
+    navigate(next && role !== "shop" && role !== "admin" ? next : homePathForRole(role), {
+      replace: true,
+    });
   }
 
   useEffect(() => {

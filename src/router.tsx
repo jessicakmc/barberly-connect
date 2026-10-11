@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { RootLayout, NotFoundComponent, ErrorComponent } from "@/components/RootLayout";
 import { RequireAuth } from "@/components/RequireAuth";
 import { RequireShop } from "@/components/RequireShop";
+import { RequireAdmin } from "@/components/RequireAdmin";
 import { Landing } from "@/pages/Landing";
 import { AuthPage } from "@/pages/Auth";
 import { AppHome } from "@/pages/AppHome";
@@ -12,6 +13,8 @@ import { Barbers } from "@/pages/Barbers";
 import { BarberDetail } from "@/pages/BarberDetail";
 import { MyBookings } from "@/pages/MyBookings";
 import { BookingSuccess } from "@/pages/BookingSuccess";
+import { ShopEarnings } from "@/pages/ShopEarnings";
+import { AdminPayouts } from "@/pages/AdminPayouts";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +38,12 @@ export const router = createBrowserRouter([
             children: [
               { path: "/shop", element: <ShopOnboarding /> },
               { path: "/shop/bookings", element: <ShopBookings /> },
+              { path: "/shop/earnings", element: <ShopEarnings /> },
             ],
+          },
+          {
+            element: <RequireAdmin />,
+            children: [{ path: "/admin/payouts", element: <AdminPayouts /> }],
           },
         ],
       },
