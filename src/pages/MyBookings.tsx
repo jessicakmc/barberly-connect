@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { useAuthedUser } from "@/components/RequireAuth";
 import {
   bookingKeys,
+  startCheckout,
   localTimezoneLabel,
   useMyBookings,
   type BookingStatus,
@@ -39,6 +40,17 @@ export function MyBookings() {
   const { data: bookings, isPending, error } = useMyBookings(user.id);
   const { data: settings } = usePlatformSettings();
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [paying, setPaying] = useState<string | null>(null);
+
+  async function pay(b: MyBooking) {
+    setPaying(b.id);
+    try {
+      window.location.assign(await startCheckout(b.id));
+    } catch (err) {
+      toast.error(errMessage(err, "Couldn't start payment."));
+      setPaying(null);
+    }
+  }
 
   async function cancel(b: MyBooking) {
     if (!window.confirm("Cancel this booking? The time slot will be released.")) return;
@@ -126,7 +138,17 @@ export function MyBookings() {
                     >
                       {STATUS_LABEL[b.status]}
                     </span>
-                    {b.status !== "cancelled" && (
+                    {b.status === "pending_payment" && (
+                      <button
+                        type="button"
+                        onClick={() => pay(b)}
+                        disabled={paying === b.id}
+                        className="btn-pill disabled:opacity-60"
+                      >
+                        {paying === b.id ? "Redirecting…" : "Pay now"}
+                      </button>
+                    )}
+                    {b.status === "pending_payment" && (
                       <button
                         type="button"
                         onClick={() => cancel(b)}

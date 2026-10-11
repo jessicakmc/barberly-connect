@@ -11,6 +11,7 @@ import { ShopBookings } from "@/pages/ShopBookings";
 import { Barbers } from "@/pages/Barbers";
 import { BarberDetail } from "@/pages/BarberDetail";
 import { MyBookings } from "@/pages/MyBookings";
+import { BookingSuccess } from "@/pages/BookingSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/app", element: <AppHome /> },
           { path: "/bookings", element: <MyBookings /> },
+          { path: "/bookings/success", element: <BookingSuccess /> },
           {
             element: <RequireShop />,
             children: [

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { CalendarDays, Clock } from "lucide-react";
-import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
@@ -14,6 +13,7 @@ import {
 import {
   bookingKeys,
   createBooking,
+  startCheckout,
   localTimezoneLabel,
   validStarts,
   type SlotWithHold,
@@ -98,26 +98,24 @@ export function BookDialog({
     if (!service || !selected) return;
     setBusy(true);
     setError(null);
+    let bookingId: string | null = null;
     try {
-      await createBooking(service.id, selected.start.id);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: bookingKeys.availability(barberId) }),
-        queryClient.invalidateQueries({ queryKey: ["my_bookings"] }),
-      ]);
-      onOpenChange(false);
-      toast.success("Booking created", {
-        description: `${service.name} with ${barberName} · ${format(
-          new Date(selected.start.starts_at),
-          "EEE d MMM, HH:mm",
-        )}. You can see it under My bookings.`,
-      });
+      // 1) Hold the slots: pending_payment booking + N booking_slots rows (atomic RPC).
+      bookingId = await createBooking(service.id, selected.start.id);
+      // 2) Pay: our server creates a Stripe Checkout Session from the booking's price snapshot.
+      const url = await startCheckout(bookingId);
+      // 3) Hand off to Stripe's hosted payment page. The webhook marks the booking paid.
+      window.location.assign(url);
     } catch (err) {
       const msg = errMessage(err, "Could not complete the booking.");
-      setError(msg);
-      // the slots may have just been taken — refresh what's available
-      void queryClient.invalidateQueries({ queryKey: bookingKeys.availability(barberId) });
-    } finally {
+      setError(
+        bookingId
+          ? `Your slot is held, but payment couldn't start: ${msg} You can pay from My bookings.`
+          : msg,
+      );
       setBusy(false);
+      void queryClient.invalidateQueries({ queryKey: bookingKeys.availability(barberId) });
+      void queryClient.invalidateQueries({ queryKey: ["my_bookings"] });
     }
   }
 
@@ -244,6 +242,10 @@ export function BookDialog({
             <p className="mt-1">
               <span className="font-medium">Price:</span> {formatMoney(service.price, settings)}
             </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              You'll pay on Stripe's secure checkout page. Your slot is confirmed once payment
+              succeeds.
+            </p>
           </div>
         )}
 
@@ -268,7 +270,7 @@ export function BookDialog({
             disabled={!service || !selected || busy}
             className="btn-pill disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {busy ? "Booking…" : "Confirm"}
+            {busy ? "Redirecting to payment…" : "Confirm & pay"}
           </button>
         </DialogFooter>
       </DialogContent>

@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { BookDialog } from "@/components/BookDialog";
@@ -23,6 +24,17 @@ export function BarberDetail() {
   const { data: slots = [] } = useBarberAvailability(id);
   const { data: settings } = usePlatformSettings();
   const [open, setOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Back from Stripe without paying: the booking stays "pending payment" (slot held) and can
+  // be paid or cancelled from My bookings.
+  useEffect(() => {
+    if (searchParams.get("checkout") !== "cancelled") return;
+    toast.info("Payment not completed", {
+      description: "Your slot is held as “pending payment”. Pay or cancel it under My bookings.",
+    });
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
   useDocumentMeta(
     data?.barber ? `${data.barber.name} — Barberly` : "Barber — Barberly",
     "Book an appointment.",

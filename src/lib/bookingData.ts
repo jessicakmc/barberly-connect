@@ -222,3 +222,35 @@ export async function createBooking(serviceId: string, startSlotId: string): Pro
   if (error) throw error;
   return data as string;
 }
+
+/**
+ * Asks our server (`POST /api/bookings/checkout`) for a Stripe Checkout URL for this
+ * pending_payment booking. The server reads the price snapshot itself — the client never
+ * sends an amount. Throws with the server's message on failure.
+ */
+export async function startCheckout(bookingId: string): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error("Please sign in again to pay.");
+  const res = await fetch("/api/bookings/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ booking_id: bookingId }),
+  });
+  const body = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+  if (!res.ok || !body.url) throw new Error(body.error ?? "Could not start payment.");
+  return body.url;
+}
+
+/** Polls-friendly read of one of the signed-in customer's bookings (RLS: own rows only). */
+export async function fetchBookingStatus(
+  bookingId: string,
+): Promise<{ status: BookingStatus; paid_at: string | null } | null> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("status, paid_at")
+    .eq("id", bookingId)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? { status: data.status as BookingStatus, paid_at: data.paid_at } : null;
+}
