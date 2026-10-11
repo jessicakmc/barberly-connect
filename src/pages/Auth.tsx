@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/useAuth";
@@ -13,6 +13,12 @@ export function AuthPage({ mode }: { mode: Mode }) {
     "Sign in or create a Barberly account as a customer or barber.",
   );
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Where to return after sign-in (e.g. the barber page whose Book button sent us here).
+  // Only same-site paths are accepted.
+  const nextParam = searchParams.get("next");
+  const next =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : null;
   const [role, setRole] = useState<AppRole>("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +34,7 @@ export function AuthPage({ mode }: { mode: Mode }) {
     } catch {
       role = null;
     }
-    navigate(homePathForRole(role), { replace: true });
+    navigate(next && role !== "shop" ? next : homePathForRole(role), { replace: true });
   }
 
   useEffect(() => {
@@ -167,7 +173,10 @@ export function AuthPage({ mode }: { mode: Mode }) {
             <button
               type="button"
               onClick={() => {
-                navigate(mode === "signup" ? "/sign-in" : "/sign-up");
+                navigate(
+                  (mode === "signup" ? "/sign-in" : "/sign-up") +
+                    (next ? `?next=${encodeURIComponent(next)}` : ""),
+                );
                 setError(null);
               }}
               className="font-medium text-foreground underline-offset-4 hover:underline"

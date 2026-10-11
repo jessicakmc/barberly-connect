@@ -36,11 +36,11 @@ export function roleOf(profile: Profile | null | undefined): ProfileRole {
 }
 
 /**
- * Where a signed-in user lands after auth. M1.1 branches shop vs customer only.
- * (Anything that isn't `shop` goes to the customer home.)
+ * Where a signed-in user lands after auth: shop → shop dashboard; everyone else → the
+ * barber marketplace. (Admin lands on the marketplace until the admin payout page exists.)
  */
 export function homePathForRole(role: string | null | undefined): string {
-  return role === "shop" ? "/shop" : "/app";
+  return role === "shop" ? "/shop" : "/barbers";
 }
 
 /** Shop onboarding is complete once the shop name + both bank fields are filled. */

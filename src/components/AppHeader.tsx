@@ -31,7 +31,7 @@ export function AppHeader({ user }: { user: User }) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-4">
           <Link
-            to={isShop ? "/shop" : "/app"}
+            to={isShop ? "/shop" : "/barbers"}
             className="font-display text-2xl font-semibold tracking-tight"
           >
             Barberly
@@ -43,6 +43,16 @@ export function AppHeader({ user }: { user: User }) {
               </NavLink>
               <NavLink to="/shop/bookings" className={navClass}>
                 Schedule &amp; services
+              </NavLink>
+            </nav>
+          )}
+          {!isShop && !isPending && (
+            <nav className="hidden items-center gap-1 sm:flex" aria-label="Customer">
+              <NavLink to="/barbers" end className={navClass}>
+                Barbers
+              </NavLink>
+              <NavLink to="/bookings" className={navClass}>
+                My bookings
               </NavLink>
             </nav>
           )}
@@ -81,6 +91,19 @@ export function AppHeader({ user }: { user: User }) {
           </NavLink>
           <NavLink to="/shop/bookings" className={navClass}>
             Schedule &amp; services
+          </NavLink>
+        </nav>
+      )}
+      {!isShop && !isPending && (
+        <nav
+          className="mx-auto flex max-w-6xl gap-1 px-4 pb-3 sm:hidden"
+          aria-label="Customer (mobile)"
+        >
+          <NavLink to="/barbers" end className={navClass}>
+            Barbers
+          </NavLink>
+          <NavLink to="/bookings" className={navClass}>
+            My bookings
           </NavLink>
         </nav>
       )}
